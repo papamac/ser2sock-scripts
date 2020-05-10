@@ -1,0 +1,103 @@
+###############################################################################
+#
+#  PACKAGE:  Serial to Socket Relay scripts (ser2sock-scripts)
+#     FILE:  option
+#    TITLE:  Optionally install and start the ser2sock daemon (ser2sockd)
+# FUNCTION:  Install, enable, and start the ser2sock server daemon using
+#            systemd.
+#    USAGE:  Use with papamac's personal package utility (p2pkg).  See below.
+#   AUTHOR:  papamac
+#  VERSION:  1.0.0
+#     DATE:  May 10, 2020
+#
+#
+# MIT LICENSE:
+#
+# Copyright (c) 2019-2020 David A. Krause, aka papamac
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+#
+# DESCRIPTION:
+#
+# The option script installs, enables, and starts the ser2sock daemon unit file
+# (ser2sock.service) that has already been downloaded to the src sub-directory
+# of the current working directory (src/ser2sock).
+#
+# Before starting, option checks to see if the ser2sock package has been
+# installed.  If not, it aborts the option execution.  If so, option copies
+# the daemon unit file (src/ser2sock/ser2sockd.service) to a user library on
+# the systemd search path (/usr/local/lib/systemd/system).  It then edits the
+# unit file in place to reference the current working directory in the
+# executable command line.  Finally, option enables the unit file and restarts
+# the daemon using the systemd systemctl utility.
+#
+# option is designed to be used with papamac's personal package utility
+# (p2pkg).  The following example downloads ser2sock (p2pkg -G), downloads the
+# ser2sock-scripts (p2pkg -g), builds/installs the executable (p2pkg -i), and
+# installs/enables/starts the daemon (p2pkg -o):
+#
+# cd /usr/local                         # Use the usr/local directory.
+# sudo p2pkg -G nutechsoftware ser2sock # Download Nu Tech's ser2sock package
+#                                         to /usr/local/src/ser2sock.
+# sudo p2pkg -gio ser2sock-scripts      # Download papamac's ser2sock-scripts
+#                                         to /usr/local/src/ser2sock-scripts,
+#                                         build/install ser2sock in
+#                                         /usr/local/bin, copy ser2sock.conf to
+#                                         /etc/ser2sock, and install/enable/
+#                                         start the ser2sock daemon using
+#                                         systemd.
+#
+#
+# DEPENDENCIES/LIMITATIONS:
+#
+# option must be run using sudo because it copies and edits files in the root-
+# owned directory /usr/local/lib/systemd/system.
+#
+###############################################################################
+
+
+pkg_name_lower=ser2sock
+daemon_name=${pkg_name_lower}d          # daemon name.
+daemon_unit=$daemon_name.service        # systemd unit file for the daemon.
+systemd=/usr/local/lib/systemd/system   # user library on the systemd search
+#                                         path.
+
+# Ensure that the ser2sock package has been downloaded and installed.
+
+if [[ ! -f $bin/$pkg_name_lower ]]; then
+    errmsg "option: $pkg_name not installed; option aborted"
+    echo_exit 1
+fi
+
+# Copy the daemon unit file from src/ser2sock to /usr/local/lib/systemd/system.
+# Change the prefix in the unit file executable path name to the current
+# working directory.
+
+infomsg "$g${t}option:$n installing $c$t$daemon_unit$n in $b$t$systemd$n"
+mkdir -p $systemd
+cp $pkg/$daemon_unit $systemd
+sed -i "s|/usr/local|$PWD|" $systemd/$daemon_unit
+
+# Enable the daemon unit and restart the daemon.
+
+infomsg "$g${t}option:$n enabling $c$t$daemon_unit$n and restarting $m$t$daemon_name$n"
+systemctl enable $systemd/$daemon_unit
+systemctl restart $daemon_name
+systemctl status $daemon_name

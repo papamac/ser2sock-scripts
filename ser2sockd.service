@@ -1,0 +1,25 @@
+###############################################################################
+#
+#  PACKAGE:  Serial to Socket Relay scripts (ser2sock-scripts)
+#     FILE:  ser2sock.service
+#    TITLE:  systemd unit file for the ser2sock server daemon (ser2sockd)
+# FUNCTION:  Specifies parameters for automated startup/shutdown of the
+#            ser2sock server daemon by systemd.
+#    USAGE:  Copied, edited, enabled and started by the option script.
+#   AUTHOR:  papamac
+#  VERSION:  1.0.0
+#     DATE:  May 10, 2020
+#
+###############################################################################
+
+[Unit]
+Description=serial to socket relay (ser2sock)
+
+[Service]
+Type=forking
+PIDFile=/run/ser2sock.pid
+ExecStart=/usr/local/bin/ser2sock -d
+
+[Install]
+Alias=/usr/local/lib/systemd/system/ser2sock.service
+WantedBy=multi-user.target
