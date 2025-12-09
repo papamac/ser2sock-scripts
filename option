@@ -83,7 +83,7 @@ systemd=/usr/local/lib/systemd/system   # user library on the systemd search
 
 # Ensure that the ser2sock package has been downloaded and installed.
 
-if [[ ! -f $bin/$pkg_name_lower ]]; then
+if [[ ! -h $bin/$pkg_name_lower ]]; then
     errmsg "option: $pkg_name not installed; option aborted"
     echo_exit 12
 fi
