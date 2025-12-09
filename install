@@ -95,5 +95,5 @@ infomsg "$g${t}install:$n building/installing $m${t}$pkg_name_lower$n in $b$t$bi
 pwd_save=$PWD
 cd $src/$pkg_name_lower
 cc -o $pkg_name_lower $pkg_name_lower.c
-cp $pkg_name_lower $bin
+ln -fs $pkg_name_lower $bin
 cd $pwd_save
