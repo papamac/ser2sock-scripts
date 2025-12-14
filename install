@@ -82,6 +82,8 @@
 pkg_name_lower=ser2sock
 etc=/etc/$pkg_name_lower
 
+p2pkg -b V1.3.1 -G nutechsoftware $pkg_name_lower
+
 # Ensure that the nutechsoftware ser2sock package has been downloaded.
 
 if [[ ! -d $src/$pkg_name_lower ]]; then
