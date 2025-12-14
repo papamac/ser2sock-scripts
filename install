@@ -92,5 +92,5 @@ fi
 # Build and install ser2sock:
 
 infomsg "$g${t}install:$n building/installing $m${t}$pkg_name_lower$n in $b$t$bin$n"
-cc -o $bin/$pkg_name_lower $src/$pkg_name_lower.c
+cc -o $bin/$pkg_name_lower $src/$pkg_name_lower/$pkg_name_lower.c
 
