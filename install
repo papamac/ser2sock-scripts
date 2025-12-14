@@ -78,22 +78,28 @@
 #
 ###############################################################################
 
+# Define local variables and functions.
 
+prefix="$prefix$g${t}install: $n"
+export prefix
 pkg_name_lower=ser2sock
 etc=/etc/$pkg_name_lower
 
-infomsg "$g${t}install:$n downloading $m${t}$pkg_name_lower.c$n"
+# Download ser2sock source code from github nutechsoftware repository.
+
+infomsg "downloading $m${t}$pkg_name_lower.c$n"
+export GIT_ADVICE=0
 p2pkg -y -b V1.3.1 -G nutechsoftware $pkg_name_lower
 
 # Ensure that the nutechsoftware ser2sock package has been downloaded.
 
-if [[ ! -d $src/$pkg_name_lower ]]; then
-    errmsg "install: Nu Tech ser2sock package not downloaded; $pkg_name install aborted"
-    echo_exit 11
+if [[ ! -f $src/$pkg_name_lower/$pkg_name_lower.c ]]; then
+    errmsg "Nu Tech ser2sock source not downloaded; $pkg_name install aborted"
+    exit 11
 fi
 
 # Build and install ser2sock:
 
-infomsg "$g${t}install:$n building/installing $m${t}$pkg_name_lower$n in $b$t$bin$n"
+infomsg "building/installing $m${t}$pkg_name_lower$n in $b$t$bin$n"
 cc -o $bin/$pkg_name_lower $src/$pkg_name_lower/$pkg_name_lower.c
 

@@ -57,6 +57,9 @@
 #
 ###############################################################################
 
+# Define local variables and functions.
+
+prefix="$prefix$g${t}remove: $n"
 pkg_name_lower=ser2sock
 daemon_name=${pkg_name_lower}d          # daemon name.
 daemon_unit=$daemon_name.service        # systemd unit file for the daemon.
@@ -65,17 +68,17 @@ systemd=/usr/local/lib/systemd/system   # user library on the systemd search
 
 # Remove the ser2sock and ser2sock-scripts files.
 
-infomsg "$g${t}remove:$n removing $m$t$pkg_name_lower$n and $m$t$pkg_name$n files and directories from $b$t$PWD$n and $b$t/etc$n"
-rm -f $bin/$pkg_name_lower
-rm -fr $src/${pkg_name_lower}*
+infomsg "removing $m$t$pkg_name_lower$n and $m$t$pkg_name$n files and directories from $b$t$PWD$n and $b$t/etc$n"
+rm -f "$bin"/$pkg_name_lower
+rm -fr "$src"/${pkg_name_lower:?}*
 
 # Stop the ser2sock daemon and disable the daemon unit.
 
-infomsg "$g${t}remove:$n stopping $m$t$daemon_name$n and disabling $b$t$daemon_unit$n"
+infomsg "stopping $m$t$daemon_name$n and disabling $b$t$daemon_unit$n"
 systemctl stop $daemon_name
 systemctl disable $daemon_unit
 
 # Remove the daemon unit files from /usr/local/lib/systemd/system.
 
-infomsg "$g${t}remove:$n removing daemon unit files from $b$t$systemd$n"
+infomsg "removing daemon unit files from $b$t$systemd$n"
 rm -f $systemd/$pkg_name_lower*.service

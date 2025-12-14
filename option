@@ -74,7 +74,9 @@
 #
 ###############################################################################
 
+# Define local variables and functions.
 
+prefix="$prefix$g${t}option: $n"
 pkg_name_lower=ser2sock
 daemon_name=${pkg_name_lower}d          # daemon name.
 daemon_unit=$daemon_name.service        # systemd unit file for the daemon.
@@ -84,21 +86,21 @@ systemd=/usr/local/lib/systemd/system   # user library on the systemd search
 # Ensure that the ser2sock package has been downloaded and installed.
 
 if [[ ! -f $bin/$pkg_name_lower ]]; then
-    errmsg "option: $pkg_name not installed; option aborted"
-    echo_exit 12
+    errmsg "$pkg_name_lower not installed; option aborted"
+    exit 12
 fi
 
 # Copy the daemon unit file from src/ser2sock to /usr/local/lib/systemd/system.
 # Change the prefix in the unit file executable path name to the current
 # working directory.
 
-infomsg "$g${t}option:$n installing $c$t$daemon_unit$n in $b$t$systemd$n"
+infomsg "installing $c$t$daemon_unit$n in $b$t$systemd$n"
 mkdir -p $systemd
-cp $pkg/$daemon_unit $systemd
+cp "$pkg"/$daemon_unit $systemd
 sed -i "s|/usr/local|$PWD|" $systemd/$daemon_unit
 
 # Enable the daemon unit and restart the daemon.
 
-infomsg "$g${t}option:$n enabling $c$t$daemon_unit$n and restarting $m$t$daemon_name$n"
+infomsg "enabling $c$t$daemon_unit$n and restarting $m$t$daemon_name$n"
 systemctl enable $systemd/$daemon_unit
 systemctl restart $daemon_name
