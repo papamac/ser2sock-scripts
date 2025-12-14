@@ -92,8 +92,5 @@ fi
 # Build and install ser2sock:
 
 infomsg "$g${t}install:$n building/installing $m${t}$pkg_name_lower$n in $b$t$bin$n"
-pwd_save=$PWD
-cd $src/$pkg_name_lower
-cc -o $pkg_name_lower $pkg_name_lower.c
-ln -fs $pkg_name_lower $bin
-cd $pwd_save
+cc -o $bin/$pkg_name_lower $src/$pkg_name_lower.c
+
