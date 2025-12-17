@@ -37,28 +37,28 @@
 #                                                                             #
 #                                                                             #
 # DESCRIPTION:                                                                #
-#
-# The remove script removes all ser2sock and ser2sock-scripts files from the
-# current working directory.  It also stops/disables the ser2sock daemon and
-# deletes the daemon unit files.
-#
-# remove is designed to be used with p2pkg.  Usage is as follows:
-#
-# sudo p2pkg -r ser2sock-scripts        # Remove the ser2sock and ser2sock-
-#                                         scripts files/directories from the
-#                                         current working directory; stop/
-#                                         disable the daemon and delete the
-#                                         daemon unit files.
-#
-#
-# DEPENDENCIES/LIMITATIONS:
-#
-# Because it changes files and directories owned by root, p2pkg -r must be
-# executed using sudo.
-#
+#                                                                             #
+# The remove script removes all ser2sock and ser2sock-scripts files from the  #
+# current working directory.  It also stops/disables the ser2sock daemon and  #
+# deletes the daemon unit files.                                              #
+#                                                                             #
+# remove is designed to be used with p2pkg.  Usage is as follows:             #
+#                                                                             #
+# sudo p2pkg -r ser2sock-scripts        # Remove the ser2sock and ser2sock-   #
+#                                         scripts files/directories from the  #
+#                                         current working directory; stop/    #
+#                                         disable the daemon and delete the   #
+#                                         daemon unit files.                  #
+#                                                                             #
+#                                                                             #
+# DEPENDENCIES/LIMITATIONS:                                                   #
+#                                                                             #
+# Because it changes files and directories owned by root, p2pkg -r must be    #
+# executed using sudo.                                                        #
+#                                                                             #
 ###############################################################################
 
-# Define local variables and functions.
+# Define local variables.
 
 daemon_name=ser2sockd                   # daemon name.
 daemon_unit=$daemon_name.service        # systemd unit file for the daemon.
@@ -67,17 +67,22 @@ systemd=/usr/local/lib/systemd/system   # user library on the systemd search
 
 # Stop the ser2sock daemon and disable the daemon unit.
 
+# shellcheck disable=SC2154
 infomsg "stopping $c$t$daemon_name$n and disabling $c$t$daemon_unit$n"
 systemctl stop $daemon_name
 systemctl disable $daemon_unit
 
 # Remove the daemon unit files from /usr/local/lib/systemd/system.
 
+# shellcheck disable=SC2154
 infomsg "removing $c$t$daemon_unit$n from $b$t$systemd$n"
 rm -f $systemd/ser2sock*.service
 
 # Remove the ser2sock and ser2sock-scripts files.
 
+# shellcheck disable=SC2154
 infomsg "removing $m${t}ser2sock$n and $m$t$pkg_name$n files and directories from $b$t$PWD$n "
+# shellcheck disable=SC2154
 rm -f "$bin"/ser2sock
+# shellcheck disable=SC2154
 rm -fr "$src"/ser2sock*

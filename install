@@ -80,6 +80,7 @@ exit_code=$?
 
 # Ensure that the ser2sock source has been downloaded.
 
+# shellcheck disable=SC2154
 if [[ $exit_code != 0 || ! -f $src/ser2sock/ser2sock.c ]]; then
     errmsg "ser2sock source not downloaded; $pkg_name install aborted"
     exit 11
@@ -87,5 +88,6 @@ fi
 
 # Build and install ser2sock:
 
+# shellcheck disable=SC2154
 infomsg "building/installing $g${t}ser2sock$n in $b$t$bin$n"
-cc -o $bin/ser2sock $src/ser2sock/ser2sock.c
+cc -o "$bin"/ser2sock "$src"/ser2sock/ser2sock.c
